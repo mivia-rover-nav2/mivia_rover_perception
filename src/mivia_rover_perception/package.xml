@@ -17,7 +17,7 @@
   <depend>rclpy</depend>
   <depend>sensor_msgs</depend>
   <depend>cv_bridge</depend>
-  <depend>opencv_python</depend>
+  <depend>python3-opencv</depend>
   <depend>message_filters</depend>
   <depend>zed_msgs</depend>
 
