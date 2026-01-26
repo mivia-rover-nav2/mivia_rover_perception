@@ -4,9 +4,9 @@
 import rclpy
 from rclpy.node import Node
 
-# Messaggi
+### ROS message imports
 from sensor_msgs.msg import Image
-from zed_msgs.msg import ObjectsStamped  # tipo corretto ZED2 object detection
+from zed_msgs.msg import ObjectsStamped
 
 import cv2
 import numpy as np
@@ -37,6 +37,8 @@ class PerceptionVisualizerNode(Node):
 
         # Publisher for processed image
         self.pub = self.create_publisher(Image, "~/output/image", 10)
+
+        self.get_logger().info("Perception Visualizer Node initialized.")
 
 
     def draw_label(self, image: np.ndarray, text: str, pos: tuple, bg_color: tuple=(255, 255, 255), text_color: tuple=(0, 0, 0), font: int=cv2.FONT_HERSHEY_SIMPLEX, font_scale: float=0.5, thickness: int=1) -> None:
@@ -73,6 +75,8 @@ class PerceptionVisualizerNode(Node):
             px, py, pz = obj.position
 
             text = f"{label} ({px:.2f},{py:.2f},{pz:.2f})"
+            if obj.label_id >= 0:
+                text = f"ID: {obj.label_id} " + text
             self.draw_label(cv_image, text, (x_min, y_min))
 
         ### Publish annotated image
