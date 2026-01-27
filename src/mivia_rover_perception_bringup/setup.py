@@ -1,8 +1,8 @@
 from setuptools import find_packages, setup
-import glob
 import os
+import glob
 
-package_name = 'mivia_rover_perception'
+package_name = 'mivia_rover_perception_bringup'
 
 setup(
     name=package_name,
@@ -12,13 +12,13 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
-        (os.path.join("share", package_name, "launch"), glob.glob("launch/*.py")),
+        (os.path.join('share', package_name, 'launch'), glob.glob('launch/*.py')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
     maintainer='DamoraDomenicoPio',
     maintainer_email='d.damora3@studenti.unisa.it',
-    description='MIVIA Rover Perception Package',
+    description='MIVIA Rover Perception Bringup Package',
     license='Apache-2.0',
     extras_require={
         'test': [
@@ -27,8 +27,6 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'mivia_rover_perception_node = mivia_rover_perception.mivia_rover_perception_node:main',
-            'perception_visualizer_node = mivia_rover_perception.perception_visualizer_node:main'
         ],
     },
 )

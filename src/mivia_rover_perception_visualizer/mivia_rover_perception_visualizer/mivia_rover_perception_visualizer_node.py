@@ -14,13 +14,13 @@ import cv_bridge
 
 from message_filters import Subscriber, ApproximateTimeSynchronizer
 
-class PerceptionVisualizerNode(Node):
+class MiviaRoverPerceptionVisualizerNode(Node):
 
     def __init__(self) -> None:
         """
         This node is responsible for displaying objects detected by the zed2 stereo camera.
         """
-        super().__init__("perception_visualizer_node")
+        super().__init__("mivia_rover_perception_visualizer_node")
 
         self.bridge = cv_bridge.CvBridge()
 
@@ -91,7 +91,7 @@ class PerceptionVisualizerNode(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    node = PerceptionVisualizerNode()
+    node = MiviaRoverPerceptionVisualizerNode()
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()

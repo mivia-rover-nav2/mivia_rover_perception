@@ -4,9 +4,9 @@ from launch_ros.actions import Node
 def generate_launch_description():
 
     perception_visualizer = Node(
-        package="mivia_rover_perception",
-        executable="perception_visualizer_node",
-        name="perception_visualizer",
+        package="mivia_rover_perception_visualizer",
+        executable="mivia_rover_perception_visualizer_node",
+        name="mivia_rover_perception_visualizer_node",
         output="screen",
         remappings=[
             ("~/input/image_raw",  "/zed/zed_node/rgb/color/rect/image"),
