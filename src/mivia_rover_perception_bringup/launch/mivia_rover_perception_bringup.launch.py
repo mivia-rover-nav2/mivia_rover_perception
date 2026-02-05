@@ -12,12 +12,24 @@ def generate_launch_description():
         'launch',
         'mivia_rover_perception_visualizer_node.launch.py'
     )
+    patchworkpp_launch_file_path = os.path.join(
+        get_package_share_directory('patchworkpp'),
+        'launch',
+        'patchworkpp.launch.py'
+    )
+
     perception_visualizer = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             perception_visualizer_launch_file_path
             )
         )
+    patchworkpp = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            patchworkpp_launch_file_path
+            )
+        )
 
     return LaunchDescription([
-        perception_visualizer
+        perception_visualizer,
+        patchworkpp
     ])
