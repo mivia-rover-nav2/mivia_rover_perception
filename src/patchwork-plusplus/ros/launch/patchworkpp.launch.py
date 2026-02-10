@@ -1,10 +1,6 @@
 from launch import LaunchDescription
-from launch.actions import ExecuteProcess
-from launch.conditions import IfCondition
-from launch.substitutions import (LaunchConfiguration, PathJoinSubstitution,
-                                  PythonExpression)
+from launch.substitutions import (LaunchConfiguration)
 from launch_ros.actions import Node
-from launch_ros.substitutions import FindPackageShare
 
 
 # This configuration parameters are not exposed thorugh the launch system, meaning you can't modify
@@ -21,13 +17,6 @@ def generate_launch_description():
 
     # tf tree configuration, these are the likely 3 parameters to change and nothing else
     base_frame = LaunchConfiguration("base_frame", default="base_link")
-
-    # ROS configuration
-    pointcloud_topic = LaunchConfiguration("cloud_topic")
-    visualize = LaunchConfiguration("visualize", default="true")
-
-    # Optional ros bag play
-    bagfile = LaunchConfiguration("bagfile", default="")
 
     # Patchwork++ node
     patchworkpp_node = Node(
@@ -59,31 +48,14 @@ def generate_launch_description():
                 "uprightness_thr": 0.70,
                 # threshold of uprightness using in Ground Likelihood Estimation(GLE). Please refer paper for more information about GLE.
                 "verbose": True,  # display verbose info
+                "filter_high_z": True,  # filter points higher than sensor height
+                "th_filter_high_z": 0.35,  # threshold for filtering points higher than sensor height
             }
         ],
     )
-    rviz_node = Node(
-        package="rviz2",
-        executable="rviz2",
-        output="screen",
-        arguments=[
-            "-d",
-            PathJoinSubstitution(
-                [FindPackageShare("patchworkpp"), "rviz", "patchworkpp.rviz"]
-            ),
-        ],
-        condition=IfCondition(visualize),
-    )
 
-    bagfile_play = ExecuteProcess(
-        cmd=["ros2", "bag", "play", bagfile],
-        output="screen",
-        condition=IfCondition(PythonExpression(["'", bagfile, "' != ''"])),
-    )
     return LaunchDescription(
         [
             patchworkpp_node,
-            # rviz_node,
-            # bagfile_play,
         ]
     )

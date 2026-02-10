@@ -32,6 +32,9 @@ class GroundSegmentationServer : public rclcpp::Node {
   std::unique_ptr<patchwork::PatchWorkpp> Patchworkpp_;
 
   std::string base_frame_{"base_link"};
+
+  const bool filter_high_z_;
+  const float th_filter_high_z_;
 };
 
 }  // namespace patchworkpp_ros

@@ -23,7 +23,9 @@ using utils::GetTimestamps;
 using utils::PointCloud2ToEigen;
 
 GroundSegmentationServer::GroundSegmentationServer(const rclcpp::NodeOptions &options)
-    : rclcpp::Node("patchworkpp_node", options) {
+    : rclcpp::Node("patchworkpp_node", options),
+      filter_high_z_(declare_parameter<bool>("filter_high_z", true)),
+      th_filter_high_z_(declare_parameter<float>("th_filter_high_z", 0.5)) {
   patchwork::Params params;
   base_frame_ = declare_parameter<std::string>("base_frame", base_frame_);
 
@@ -72,11 +74,39 @@ GroundSegmentationServer::GroundSegmentationServer(const rclcpp::NodeOptions &op
 
 void GroundSegmentationServer::EstimateGround(
     const sensor_msgs::msg::PointCloud2::ConstSharedPtr &msg) {
-  const auto &cloud = patchworkpp_ros::utils::PointCloud2ToEigenMat(msg);
+  auto cloud = patchworkpp_ros::utils::PointCloud2ToEigenMat(msg);
+
+  // Filter points higher than a certain threshold if the option is enabled
+  if (filter_high_z_) {
+    auto mask = cloud.col(2).array() < th_filter_high_z_;
+    int count = mask.count();
+    Eigen::MatrixXf filtered(count, 3);
+    int idx = 0;
+    for (int i = 0; i < cloud.rows(); i++) {
+        if (mask(i)) {
+            filtered.row(idx++) = cloud.row(i);
+        }
+    }
+    cloud = filtered;
+  }
 
   // Estimate ground
   Patchworkpp_->estimateGround(cloud);
   Eigen::MatrixX3f nonground = Patchworkpp_->getNonground();
+
+//   // Filter points higher than a certain threshold if the option is enabled
+//   if (filter_high_z_) {
+//     auto mask = nonground.col(2).array() < th_filter_high_z_;
+//     int count = mask.count();
+//     Eigen::MatrixXf filtered(count, 3);
+//     int idx = 0;
+//     for (int i = 0; i < nonground.rows(); i++) {
+//         if (mask(i)) {
+//             filtered.row(idx++) = nonground.row(i);
+//         }
+//     }
+//     nonground = filtered;
+//   }
   std_msgs::msg::Header header = msg->header;
   header.frame_id              = base_frame_;
   nonground_publisher_->publish(
