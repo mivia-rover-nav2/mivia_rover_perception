@@ -33,7 +33,7 @@ def generate_launch_description():
                 "base_frame": base_frame,
                 "use_sim_time": use_sim_time,
                 # Patchwork++ configuration
-                "sensor_height": 0.24,
+                "sensor_height": 0.176,  # ZED left camera height above the floor, measured on the rover (floor-plane fit).
                 "num_iter": 4,  # Number of iterations for ground plane estimation using PCA.
                 "num_lpr": 30,  # Maximum number of points to be selected as lowest points representative.
                 "num_min_pts": 20,  # Minimum number of points to be estimated as ground plane in each patch.
